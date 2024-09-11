@@ -1,0 +1,13 @@
+POST http://localhost:5000/oauth/token
+Accept: application/json
+Content-Type: application/json
+Authorization: basic
+
+{
+  "client_id": "springhealth",
+  "client_secret": "springhealth_secret",
+  "grand_type": "password",
+  "scope": "webclient",
+  "username": "springhealth_user",
+  "password": "password1"
+}

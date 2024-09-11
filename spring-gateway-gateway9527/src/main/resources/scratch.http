@@ -1,0 +1,4 @@
+GET http://gateway9527.com:9527/payment/get/1
+Accept: application/json
+
+###
