@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: consul-consumer-service
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+    consul:
+      host: 121.37.20.182
+      port: 58500
+      discovery:
+        heartbeat:
+          enabled: true
+        service-name: ${spring.application.name}
+      config:
+        enabled: true
+        profile-separator: '-'
+        # 和 consul 的路径一致
+        default-context: ${spring.application.name}
+        dataKey: data
+        format: yaml
+        watch:
+          wait-time: 1

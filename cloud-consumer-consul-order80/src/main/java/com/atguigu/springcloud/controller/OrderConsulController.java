@@ -1,29 +1,37 @@
 package com.atguigu.springcloud.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import com.atguigu.springcloud.api.PayClient;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-import javax.annotation.Resource;
 
 /**
- * @auther zzyy
- * @create 2020-02-19 16:24
+ * @author zzyy
+ * @since 2020-02-19 16:24
  */
 @RestController
-@Slf4j
+@RequiredArgsConstructor
 public class OrderConsulController
 {
-    public static final String INVOKE_URL = "http://consul-provider-payment";
+    private final PayClient payClient;
 
-    @Resource
-    private RestTemplate restTemplate;
+    /**
+     * 测试断路器的三种中通
+     * provider 根据不同的 ID 提供不同的响应状态
+     */
+    @GetMapping("/circuit/{id}")
+    public String circuit(@PathVariable Integer id) {
+        return payClient.circuit(id);
+    }
 
-    @GetMapping(value = "/consumer/payment/consul")
-    public String paymentInfo()
-    {
-        String result = restTemplate.getForObject(INVOKE_URL+"/payment/consul",String.class);
-        return result;
+
+    /**
+     * consul 配置文件，用于测试动态刷新
+     */
+    @GetMapping("/consul/config")
+    public String consulConfig(@Value("${consul.info}") String info) {
+        return info;
     }
 }

@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>cloud-provider-consul-payment8006</artifactId>
+    <artifactId>cloud-provider-consul-payment8007</artifactId>
 
     <dependencies>
         <!-- 引入自己定义的api通用包，可以使用Payment支付Entity -->
