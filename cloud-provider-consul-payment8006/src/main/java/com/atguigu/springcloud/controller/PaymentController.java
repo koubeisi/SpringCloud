@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -30,18 +31,17 @@ public class PaymentController {
      * @return String
      */
     @GetMapping("/pay/circuit/{id}")
-    public String circuit(@PathVariable Integer id) {
+    public Map<String, String> circuit(@PathVariable Integer id) {
         if (id < 0) throw new IllegalArgumentException("id < 0");
 
         if (id > 100) {
             try {
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.SECONDS.sleep(10);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                e.printStackTrace();
+                log.error(e.getMessage(), e);
             }
         }
-
-        return "serverPort: " + serverPort + "Hello, circuit! Input Id: " + id + UUID.randomUUID();
+        return Map.of("port", serverPort, "msg", "Hello, circuit! Input Id: " + id + UUID.randomUUID());
     }
 }

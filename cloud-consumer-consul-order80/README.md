@@ -2,11 +2,11 @@
 
 ```shell
 # exception
-curl http://localhost/circui/-1
+curl http://localhost/circuit/-1
 # normal
-curl http://localhost/circui/1
+curl http://localhost/circuit/1
 # timeout
-curl http://localhost/circui/100
+curl http://localhost/circuit/101
 ```
 
 # consul

@@ -4,6 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.Map;
+
 /**
  * @author PC
  * @since 2024/9/24
@@ -12,5 +14,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface PayClient {
 
     @GetMapping("/pay/circuit/{id}")
-    String circuit(@PathVariable Integer id);
+    Map<String,Object> circuit(@PathVariable Integer id);
 }

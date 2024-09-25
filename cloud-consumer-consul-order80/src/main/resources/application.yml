@@ -5,3 +5,56 @@ server:
 spring:
   profiles:
     active:
+  cloud:
+    openfeign:
+      client:
+        config:
+          # 全局设置
+          default:
+            connectTimeout: 3000
+            readTimeout: 5000
+            followRedirects: false
+          # 指定某个微服务
+          consul-provider-service:
+            connectTimeout: 1000
+            readTimeout: 2000
+            followRedirects: false
+      httpclient:
+        hc5:
+          enabled: true
+      compression:
+        request:
+          enabled: true
+          mime-types: application/xml,application/json,text/plain
+          min-request-size: 2048
+        response:
+          enabled: true
+      circuitbreaker:
+        enabled: true
+        group:
+          enabled: true
+
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        failureRateThreshold: 50 #设置失败率达到多少后跳闸
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 6
+        minimum-number-of-calls: 6
+        automatic-transition-from-open-to-half-open-enabled: true
+        # 熔断器打开后，多长时间进入半开状态
+        waitDurationInOpenState: 5s
+        permitted-number-of-calls-in-half-open-state: 2
+        record-exceptions:
+          - java.lang.Exception
+    instances:
+      consul-provider-service:
+        baseConfig: default
+
+
+
+#logging:
+#  level:
+#    com.atguigu.springcloud.api: debug
