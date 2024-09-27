@@ -39,8 +39,8 @@ resilience4j:
   circuitbreaker:
     configs:
       default:
-        failureRateThreshold: 50 #设置失败率达到多少后跳闸
         sliding-window-type: COUNT_BASED
+        failureRateThreshold: 50 #设置失败率达到多少后跳闸
         sliding-window-size: 6
         minimum-number-of-calls: 6
         automatic-transition-from-open-to-half-open-enabled: true
@@ -48,8 +48,9 @@ resilience4j:
         waitDurationInOpenState: 5s
         permitted-number-of-calls-in-half-open-state: 2
         record-exceptions:
-          - java.lang.Exception
+          - java.lang.Throwable
     instances:
+      # 和 @CircuitBreaker 注解的 name 相同
       consul-provider-service:
         baseConfig: default
 

@@ -3,6 +3,7 @@ package com.atguigu.springcloud.config;
 import feign.Logger;
 import feign.Request;
 import feign.Retryer;
+import feign.codec.ErrorDecoder;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
@@ -29,6 +30,7 @@ public class FeignConfig {
         return Logger.Level.FULL;   // 全部日志
     }
 
+    // 该功能也可在yml文件中配置
 /*    @Bean
     public Request.Options feignOptions() {
         // 连接超时5000ms，读取超时10000ms
@@ -41,4 +43,10 @@ public class FeignConfig {
         // 初始间隔100ms，最大间隔1秒，重试5次
         return new Retryer.Default(100, SECONDS.toMillis(1), 3);
     }
+
+    // 自定义 ErrorDecoder，因为默认只重试超时异常，不重试 500 异常
+//    @Bean
+//    public ErrorDecoder errorDecoder() {
+//        return new FeignErrorDecoder(); // 使用自定义的 ErrorDecoder
+//    }
 }

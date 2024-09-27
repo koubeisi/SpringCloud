@@ -22,46 +22,8 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 @Slf4j
 public class OrderConsulController {
+
     private final PayClient payClient;
-
-    /**
-     * provider 根据不同的 ID 提供不同的响应状态
-     */
-    @GetMapping("/feign/{id}")
-    public Map<String, Object> feign(@PathVariable Integer id) {
-        var stopWatch = new StopWatch();
-        Map<String, Object> result;
-        try {
-            stopWatch.start();
-            result = payClient.circuit(id);
-        } catch (Exception e) {
-            stopWatch.stop();
-            log.error(e.getMessage(), e);
-            return Map.of("error Time", stopWatch.getTotalTimeMillis());
-        }
-        return Map.of("result", result, "Time", stopWatch.getTotalTimeMillis());
-    }
-
-    /**
-     * provider 根据不同的 ID 提供不同的响应状态
-     */
-    @GetMapping("/circuit")
-    @CircuitBreaker(name = "consul-provider-service", fallbackMethod = "fallback")
-    public Map<String, Object> circuit() {
-        Map<String, Object> result;
-        try {
-            result = payClient.circuit(101);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return Map.of("error", e.getMessage());
-        }
-        return result;
-    }
-
-    public String fallback(Throwable e) {
-        log.error(e.getMessage(), e);
-        return "fallback 服务繁忙请稍后再试:" + System.currentTimeMillis();
-    }
 
 
     /**
@@ -72,13 +34,40 @@ public class OrderConsulController {
         return info;
     }
 
+    /**
+     * provider 根据不同的 ID 提供不同的响应状态，可以用来测试
+     * 1. 超时控制
+     * 2. 重试机制（结合日志打印）
+     */
+    @GetMapping("/feign/{id}")
+    public Map<String, Object> feign(@PathVariable Integer id) {
+        var stopWatch = new StopWatch();
+        stopWatch.start();
+        var result = payClient.circuit(id);
+        stopWatch.stop();
+        return Map.of("result", result, "Time", stopWatch.getTotalTimeMillis());
+    }
+
+    /**
+     * provider 根据不同的 ID 提供不同的响应状态
+     */
+    @GetMapping("/circuit/{id}")
+    @CircuitBreaker(name = "consul-provider-service", fallbackMethod = "circuitFallback")
+    public Map<String, Object> circuit(@PathVariable Integer id) {
+        return payClient.circuit(id);
+    }
+
+    public Map<String, Object> circuitFallback(Integer id, Throwable e) {
+        log.error(e.getMessage(), e);
+        return Map.of("error:" + id, "Fallback occurred at: " + System.currentTimeMillis());
+    }
 
 
     /**
      * provider 根据不同的 ID 提供不同的响应状态
      */
     @GetMapping("/bulkhead/semaphore/{id}")
-    @Bulkhead(name = "consul-provider-service", fallbackMethod = "bulkHeadFallback",type = Bulkhead.Type.SEMAPHORE)
+    @Bulkhead(name = "consul-provider-service", fallbackMethod = "bulkHeadFallback", type = Bulkhead.Type.SEMAPHORE)
     public Map<String, Object> bulkheadSemaphore(@PathVariable Integer id) {
         Map<String, Object> result;
         try {
@@ -99,10 +88,11 @@ public class OrderConsulController {
      * provider 根据不同的 ID 提供不同的响应状态
      */
     @GetMapping("/bulkhead/threadPool/{id}")
-    @Bulkhead(name = "consul-provider-service", fallbackMethod = "bulkHeadThreadPoolFallback",type = Bulkhead.Type.THREADPOOL)
-    public CompletableFuture< Map<String, Object>> bulkheadThreadPool(@PathVariable Integer id) {
+    @Bulkhead(name = "consul-provider-service", fallbackMethod = "bulkHeadThreadPoolFallback", type = Bulkhead.Type.THREADPOOL)
+    public CompletableFuture<Map<String, Object>> bulkheadThreadPool(@PathVariable Integer id) {
         return CompletableFuture.supplyAsync(() -> payClient.circuit(id));
     }
+
     public String bulkHeadThreadPoolFallback(Throwable e) {
         log.error(e.getMessage(), e);
         return "fallback 服务繁忙请稍后再试:" + System.currentTimeMillis();
