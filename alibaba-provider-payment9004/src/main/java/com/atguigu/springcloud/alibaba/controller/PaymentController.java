@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @auther zzyy
@@ -19,7 +20,7 @@ public class PaymentController
     @Value("${server.port}")
     private String serverPort;
 
-    public static HashMap<Long,Payment> hashMap = new HashMap<>();
+    public static Map<Long,Payment> hashMap = new HashMap<>();
     static
     {
         hashMap.put(1L,new Payment(1L,"28a8c1e3bc2742d8848569891fb42181"));
@@ -33,6 +34,12 @@ public class PaymentController
         Payment payment = hashMap.get(id);
         CommonResult<Payment> result = new CommonResult(200,"from mysql,serverPort:  "+serverPort,payment);
         return result;
+    }
+
+    @GetMapping(value = "/payment/nacos/{id}")
+    public String getPayment(@PathVariable("id") Integer id)
+    {
+        return "nacos registry, serverPort: "+ serverPort+"\t id"+id;
     }
 
 
