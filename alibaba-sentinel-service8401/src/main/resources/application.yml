@@ -14,6 +14,7 @@ spring:
       transport:
         dashboard: localhost:8080 #配置Sentinel dashboard地址
         port: 8719
+      eager: true
 #      datasource:
 #        flow:
 #          nacos:

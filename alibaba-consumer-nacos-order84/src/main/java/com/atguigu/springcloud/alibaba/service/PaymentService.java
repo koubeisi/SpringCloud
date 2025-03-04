@@ -14,5 +14,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface PaymentService
 {
     @GetMapping(value = "/paymentSQL/{id}")
-    public CommonResult<Payment> paymentSql(@PathVariable("id") Long id);
+    CommonResult<Payment> paymentSql(@PathVariable("id") Long id);
 }
