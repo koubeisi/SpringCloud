@@ -14,6 +14,17 @@ spring:
         namespace: public             # 命名空间
         group: DEFAULT_GROUP          # 服务分组
 
+dubbo:
+  application:
+    name: ${spring.application.name}
+  registry:
+    address: nacos://116.205.224.221:8848  # Nacos 作为注册中心
+  protocol:
+    name: dubbo
+    port: 20880
+  consumer:
+    check: false
+    timeout: 3000
 
 #消费者将要去访问的微服务名称(注册成功进nacos的微服务提供者)
 service-url:

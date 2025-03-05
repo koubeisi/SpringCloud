@@ -1,4 +1,4 @@
-package com.atguigu.springcloud.alibaba.dubbo;
+package com.atguigu.springcloud.alibaba.controller;
 
 import com.atguigu.springcloud.entities.CommonResult;
 import com.atguigu.springcloud.entities.Payment;
