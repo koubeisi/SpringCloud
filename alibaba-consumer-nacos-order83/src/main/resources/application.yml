@@ -13,6 +13,13 @@ spring:
         password: nacos_123
         namespace: public             # 命名空间
         group: DEFAULT_GROUP          # 服务分组
+        watch-delay: 30000
+        watch:
+          enabled: true
+        heart-beat:
+          enabled: true
+        heart-beat-interval: 5000
+        heart-beat-timeout: 5000
 
 dubbo:
   application:
